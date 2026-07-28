@@ -6,17 +6,30 @@ const router = useRouter();
 
 const email = ref("");
 const password = ref("");
+const passwordConfirm = ref("");
 
-function goRegister() {
-  router.push({ name: "register" });
+function handleRegister() {
+  if (password.value !== passwordConfirm.value) {
+    alert("パスワードが一致しません");
+    return;
+  }
+
+  alert("新規登録しました");
+
+  // 登録後ログイン画面へ戻る
+  router.push({ name: "login" });
+}
+
+function backLogin() {
+  router.push({ name: "login" });
 }
 </script>
 
 <template>
-  <div class="login-page">
+  <div class="register-page">
     <h1 class="logo">proffy</h1>
 
-    <form class="login-form">
+    <form class="register-form" @submit.prevent="handleRegister">
       <label>
         メールアドレス：
         <input v-model="email" type="email" />
@@ -27,34 +40,36 @@ function goRegister() {
         <input v-model="password" type="password" />
       </label>
 
-      <router-link to="/forgot-password" class="forgot">
-        パスワードをお忘れですか？
-      </router-link>
+      <label>
+        パスワード確認：
+        <input v-model="passwordConfirm" type="password" />
+      </label>
 
-      <button class="login-btn">ログイン</button>
-      <button type="button" class="register-btn" @click="goRegister">
-        新規登録
-      </button>
+      <button class="register-btn">新規登録</button>
+
+      <a href="#" class="back-link" @click.prevent="backLogin">
+        ログイン画面へ戻る
+      </a>
     </form>
   </div>
 </template>
 
 <style scoped>
 /* ページ全体 */
-.login-page {
+.register-page {
   position: fixed;
   inset: 0;
   background: #f9e7ef;
 
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 縦方向の中央 */
-  align-items: center; /* 横方向の中央 */
+  justify-content: center;
+  align-items: center;
 
   box-sizing: border-box;
 }
 
-/* タイトル */
+/* ロゴ */
 .logo {
   font-size: 56px;
   font-family: "Times New Roman", serif;
@@ -63,10 +78,11 @@ function goRegister() {
 }
 
 /* フォーム */
-.login-form {
+.register-form {
   width: 260px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 label {
@@ -77,45 +93,48 @@ label {
 input {
   width: 100%;
   height: 32px;
+
   margin-top: 4px;
+
   border: 1px solid #999;
   border-radius: 5px;
+
   padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* パスワード忘れ */
-.forgot {
-  font-size: 12px;
-  color: #3b73d9;
-  margin-bottom: 35px;
-  text-decoration: underline;
-}
-
 /* ボタン共通 */
-.login-btn,
-.register-btn {
+.register-btn,
+.back-btn {
   width: 130px;
   height: 48px;
 
   margin: 10px auto;
-
-  display: block; /* ←追加 */
 
   border: 1px solid #7a5b3c;
   border-radius: 10px;
 
   background: #ffe7a6;
 
-  font-size: 24px;
+  font-size: 20px;
 
   cursor: pointer;
 
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-.login-btn:hover,
-.register-btn:hover {
+.register-btn:hover,
+.back-btn:hover {
   background: #ffd977;
+}
+.back-link {
+  font-size: 14px;
+  color: #3b73d9;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+
+  margin-top: 20px;
 }
 </style>
