@@ -7,6 +7,10 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 
+function login() {
+  router.push("/top");
+}
+
 function goRegister() {
   router.push({ name: "register" });
 }
@@ -16,22 +20,23 @@ function goRegister() {
   <div class="login-page">
     <h1 class="logo">proffy</h1>
 
-    <form class="login-form">
+    <form class="login-form" @submit.prevent="login">
       <label>
         メールアドレス：
-        <input v-model="email" type="email" />
+        <input v-model="email" type="email" required />
       </label>
 
       <label>
         パスワード：
-        <input v-model="password" type="password" />
+        <input v-model="password" type="password" required />
       </label>
 
       <router-link to="/forgot-password" class="forgot">
         パスワードをお忘れですか？
       </router-link>
 
-      <button class="login-btn">ログイン</button>
+      <button type="submit" class="login-btn">ログイン</button>
+
       <button type="button" class="register-btn" @click="goRegister">
         新規登録
       </button>
