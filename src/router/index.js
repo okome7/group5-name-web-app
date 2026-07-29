@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/LoginView.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import RegisterView from "../views/RegisterView.vue";
+import TopView from '../views/TopView.vue';
+import SelfDiagnosisQuestionView from "../views/SelfDiagnosisQuestionView.vue";
+import SelfDiagnosisResultView from "../views/SelfDiagnosisResultView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +25,18 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegisterView,
+    },
+    { path: '/', name: 'login', component: LoginView },
+    { path: '/top', name: 'top', component: TopView },
+    {
+      path: "/self-diagnosis",
+      name: "SelfDiagnosisQuestion",
+      component: SelfDiagnosisQuestionView,
+    },
+    {
+      path: "/self-diagnosis/result",
+      name: "SelfDiagnosisResult",
+      component: SelfDiagnosisResultView,
     },
   ],
 });
