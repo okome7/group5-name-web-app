@@ -11,7 +11,12 @@
     <main class="content">
       <!-- 検索バー -->
       <div class="search-bar">
-        <input v-model="searchQuery" type="text" placeholder="名前またはユーザーIDを入力" class="search-input" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="名前またはユーザーIDを入力"
+          class="search-input"
+        />
         <button class="search-btn">🔍 検索</button>
       </div>
 
@@ -19,7 +24,9 @@
       <!-- Case 1: 「フォロー中」のユーザーを選択している場合 ➔ 詳細を表示 -->
       <div v-if="selectedUser.status === 'following'" class="profile-card">
         <div class="card-title-header">
-          <span class="user-display-name">{{ selectedUser.name }} さんのプロフィール</span>
+          <span class="user-display-name"
+            >{{ selectedUser.name }} さんのプロフィール</span
+          >
         </div>
 
         <div class="profile-detail-top">
@@ -38,36 +45,56 @@
 
         <div class="profile-detail-info">
           <div class="info-row">
-            <span class="icon">📍</span> <span class="label">エリア:</span> {{ selectedUser.area }}
+            <span class="icon">📍</span> <span class="label">エリア:</span>
+            {{ selectedUser.area }}
           </div>
           <div class="info-row">
-            <span class="icon">📍</span> <span class="label">趣味:</span> {{ selectedUser.hobby }}
+            <span class="icon">📍</span> <span class="label">趣味:</span>
+            {{ selectedUser.hobby }}
           </div>
           <div class="info-row">
-            <span class="icon">💬</span> <span class="label">一言:</span> {{ selectedUser.comment }}
+            <span class="icon">💬</span> <span class="label">一言:</span>
+            {{ selectedUser.comment }}
           </div>
         </div>
 
         <div class="card-actions">
-          <button class="btn btn-reject" @click="rejectSelectedUser">拒否する</button>
-          <button class="btn btn-following-state" @click="toggleFollow(selectedUser)">フォロー中</button>
+          <button class="btn btn-reject" @click="rejectSelectedUser">
+            拒否する
+          </button>
+          <button
+            class="btn btn-following-state"
+            @click="toggleFollow(selectedUser)"
+          >
+            フォロー中
+          </button>
         </div>
       </div>
 
       <!-- Case 2: 「フォロー中」以外（未フォロー/リクエスト中）を選択している場合 ➔ 非公開表示 -->
       <div v-else class="profile-card private-card">
         <div class="card-title-header center">
-          <span class="user-display-name">{{ selectedUser.name }} さんのプロフィール</span>
+          <span class="user-display-name"
+            >{{ selectedUser.name }} さんのプロフィール</span
+          >
         </div>
 
         <div class="private-content">
           <div class="lock-icon">🔒</div>
           <div class="private-title">このアカウントは非公開です</div>
-          <div class="private-sub">フォローすると{{ selectedUser.name }}さんのプロフィール詳細を閲覧できます</div>
+          <div class="private-sub">
+            フォローすると{{
+              selectedUser.name
+            }}さんのプロフィール詳細を閲覧できます
+          </div>
         </div>
 
         <div class="card-actions center-action">
-          <button class="btn" :class="getButtonClass(selectedUser)" @click="toggleFollow(selectedUser)">
+          <button
+            class="btn"
+            :class="getButtonClass(selectedUser)"
+            @click="toggleFollow(selectedUser)"
+          >
             {{ getButtonText(selectedUser) }}
           </button>
         </div>
@@ -75,15 +102,29 @@
 
       <!-- タブ切替 -->
       <div class="tab-container">
-        <button class="tab-button" :class="{ active: activeTab === 'followers' }" @click="activeTab = 'followers'">
+        <button
+          class="tab-button"
+          :class="{ active: activeTab === 'followers' }"
+          @click="activeTab = 'followers'"
+        >
           フォロワー ({{ followersList.length }})
         </button>
-        <button class="tab-button" :class="{ active: activeTab === 'following' }" @click="activeTab = 'following'">
+        <button
+          class="tab-button"
+          :class="{ active: activeTab === 'following' }"
+          @click="activeTab = 'following'"
+        >
           フォロー中 ({{ followingList.length }})
         </button>
-        <button class="tab-button" :class="{ active: activeTab === 'requests' }" @click="activeTab = 'requests'">
+        <button
+          class="tab-button"
+          :class="{ active: activeTab === 'requests' }"
+          @click="activeTab = 'requests'"
+        >
           リクエスト
-          <span v-if="requestsList.length > 0" class="badge">{{ requestsList.length }}</span>
+          <span v-if="requestsList.length > 0" class="badge">{{
+            requestsList.length
+          }}</span>
         </button>
       </div>
 
@@ -99,7 +140,11 @@
             @click="selectedUser = user"
           >
             <span class="user-name">{{ user.name }}</span>
-            <button class="btn btn-sm" :class="getButtonClass(user)" @click.stop="toggleFollow(user)">
+            <button
+              class="btn btn-sm"
+              :class="getButtonClass(user)"
+              @click.stop="toggleFollow(user)"
+            >
               {{ getButtonText(user) }}
             </button>
           </div>
@@ -115,18 +160,40 @@
             @click="selectedUser = user"
           >
             <span class="user-name">{{ user.name }}</span>
-            <button class="btn btn-sm btn-following-state" @click.stop="toggleFollow(user)">フォロー中</button>
+            <button
+              class="btn btn-sm btn-following-state"
+              @click.stop="toggleFollow(user)"
+            >
+              フォロー中
+            </button>
           </div>
         </template>
 
         <!-- リクエスト タブ -->
         <template v-else-if="activeTab === 'requests'">
-          <div v-if="requestsList.length === 0" class="empty-msg">リクエストはありません</div>
-          <div v-for="user in requestsList" :key="user.id" class="user-item" @click="selectedUser = user">
+          <div v-if="requestsList.length === 0" class="empty-msg">
+            リクエストはありません
+          </div>
+          <div
+            v-for="user in requestsList"
+            :key="user.id"
+            class="user-item"
+            @click="selectedUser = user"
+          >
             <span class="user-name">{{ user.name }}</span>
             <div class="request-btns">
-              <button class="btn btn-sm btn-accept" @click.stop="acceptRequest(user)">承認</button>
-              <button class="btn btn-sm btn-delete" @click.stop="rejectRequest(user)">拒否</button>
+              <button
+                class="btn btn-sm btn-accept"
+                @click.stop="acceptRequest(user)"
+              >
+                承認
+              </button>
+              <button
+                class="btn btn-sm btn-delete"
+                @click.stop="rejectRequest(user)"
+              >
+                拒否
+              </button>
             </div>
           </div>
         </template>
@@ -145,7 +212,7 @@ const activeTab = ref("followers");
 
 // トップページへ遷移する処理
 const goToTop = () => {
-  router.push("/");
+  router.push("/top");
 };
 
 // 初期ユーザーデータ
@@ -160,7 +227,7 @@ const users = ref([
     bio: "カフェ巡りと写真撮影が大好き📷✨ 美味しいスイーツを探す旅に出ています。",
     area: "大阪府",
     hobby: "カフェ巡り、写真撮影、旅行",
-    comment: "カフェ好きの人と繋がりたいです✨"
+    comment: "カフェ好きの人と繋がりたいです✨",
   },
   {
     id: 2,
@@ -172,7 +239,7 @@ const users = ref([
     bio: "音楽鑑賞とライブに行くのが休日の楽しみです🎶",
     area: "東京都",
     hobby: "ライブ鑑賞、邦ロック",
-    comment: "気軽に話しかけてください！"
+    comment: "気軽に話しかけてください！",
   },
   {
     id: 3,
@@ -184,7 +251,7 @@ const users = ref([
     bio: "週末はドライブによく出かけています🚗💨",
     area: "神奈川県",
     hobby: "ドライブ、スノーボード",
-    comment: "アクティブな友達募集中です！"
+    comment: "アクティブな友達募集中です！",
   },
   {
     id: 4,
@@ -196,7 +263,7 @@ const users = ref([
     bio: "Web開発とイラストを描くのが趣味です💻🎨 最近はキャンプにもハマり中⛺️",
     area: "兵庫県",
     hobby: "プログラミング、イラスト、アウトドア",
-    comment: "ガジェットとアウトドア好きの方ぜひ繋がりましょう！"
+    comment: "ガジェットとアウトドア好きの方ぜひ繋がりましょう！",
   },
   {
     id: 5,
@@ -208,7 +275,7 @@ const users = ref([
     bio: "読書と映画鑑賞が趣味です📚🎬",
     area: "京都府",
     hobby: "映画観賞、読書",
-    comment: "おすすめの映画教えてください！"
+    comment: "おすすめの映画教えてください！",
   },
   {
     id: 6,
@@ -220,8 +287,8 @@ const users = ref([
     bio: "美味しいものを食べることが一番の幸せ🍴❤️",
     area: "愛知県",
     hobby: "グルメ巡り、料理",
-    comment: "美味しいお店情報交換しましょう！"
-  }
+    comment: "美味しいお店情報交換しましょう！",
+  },
 ]);
 
 // 初期表示で「鈴木 葵」を選択
@@ -231,13 +298,23 @@ const selectedUser = ref(users.value[0]);
 const filteredUsers = computed(() => {
   if (!searchQuery.value.trim()) return users.value;
   const query = searchQuery.value.toLowerCase();
-  return users.value.filter((u) => u.name.toLowerCase().includes(query) || u.idName.toLowerCase().includes(query));
+  return users.value.filter(
+    (u) =>
+      u.name.toLowerCase().includes(query) ||
+      u.idName.toLowerCase().includes(query),
+  );
 });
 
 // タブごとのリスト
-const followersList = computed(() => filteredUsers.value.filter((u) => u.isFollower));
-const followingList = computed(() => filteredUsers.value.filter((u) => u.status === "following"));
-const requestsList = computed(() => filteredUsers.value.filter((u) => u.isRequesting));
+const followersList = computed(() =>
+  filteredUsers.value.filter((u) => u.isFollower),
+);
+const followingList = computed(() =>
+  filteredUsers.value.filter((u) => u.status === "following"),
+);
+const requestsList = computed(() =>
+  filteredUsers.value.filter((u) => u.isRequesting),
+);
 
 // ボタンのテキストとスタイル切り替え
 const getButtonText = (user) => {
