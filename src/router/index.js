@@ -6,8 +6,8 @@ import RegisterView from "../views/RegisterView.vue";
 import TopView from "../views/TopView.vue";
 import SelfDiagnosisQuestionView from "../views/SelfDiagnosisQuestionView.vue";
 import SelfDiagnosisResultView from "../views/SelfDiagnosisResultView.vue";
-// ★ プロフィール作成ページのインポートを追加
 import ProfileCreationView from "../views/ProfileCreationView.vue";
+import ProfileExchangingView from "../views/ProfileExchangingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,11 +43,14 @@ const router = createRouter({
       name: "SelfDiagnosisResult",
       component: SelfDiagnosisResultView,
     },
-    // ★ プロフィール作成画面のルートを追加
     {
       path: "/profile/create",
       name: "profile-creation",
       component: ProfileCreationView,
+    {
+      path: "/profile-exchange",
+      name: "ProfileExchanging",
+      component: ProfileExchangingView,
     },
   ],
 });

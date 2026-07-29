@@ -106,7 +106,7 @@ watchEffect(() => {
 });
 
 const goHome = () => {
-  router.push("/");
+  router.push("/top");
 };
 </script>
 

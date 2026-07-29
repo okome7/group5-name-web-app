@@ -1,38 +1,47 @@
-# .
+# proffy
 
-This template should help get you started developing with Vue 3 in Vite.
+女子大学生向けのプロフィール帳交換アプリです。
+プロフィール帳を作成・交換することで、初対面でも共通点を見つけ、交流を深めることを目的としています。
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 機能
 
-## Recommended Browser Setup
+- ログイン
+- 新規登録
+- パスワード再設定
+- 自己診断
+- 診断結果表示
+- プロフィール作成
+- プロフィール交換
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+---
 
-## Customize configuration
+## 使用技術
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Vue 3
+- JavaScript
+- Vue Router
+- Vite
 
-## Project Setup
+---
 
-```sh
+## セットアップ
+
+### パッケージのインストール
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 開発サーバー起動
 
-```sh
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+ブラウザで以下を開いてください。
 
-```sh
-npm run build
+```
+http://localhost:5173
 ```
