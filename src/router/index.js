@@ -6,6 +6,7 @@ import RegisterView from "../views/RegisterView.vue";
 import TopView from "../views/TopView.vue";
 import SelfDiagnosisQuestionView from "../views/SelfDiagnosisQuestionView.vue";
 import SelfDiagnosisResultView from "../views/SelfDiagnosisResultView.vue";
+import ProfileCreationView from "../views/ProfileCreationView.vue";
 import ProfileExchangingView from "../views/ProfileExchangingView.vue";
 
 const router = createRouter({
@@ -42,6 +43,10 @@ const router = createRouter({
       name: "SelfDiagnosisResult",
       component: SelfDiagnosisResultView,
     },
+    {
+      path: "/profile/create",
+      name: "profile-creation",
+      component: ProfileCreationView,
     {
       path: "/profile-exchange",
       name: "ProfileExchanging",
