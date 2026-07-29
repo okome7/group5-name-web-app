@@ -1,90 +1,79 @@
 <template>
   <div class="page-container">
-    <!-- ヘッダー（戻るボタン + タイトル） -->
+    <!-- ヘッダー -->
     <header class="header">
-      <button class="back-button" @click="goBack">＜</button>
+      <!-- ＜ 押したらトップページに飛ぶボタン -->
+      <button class="back-btn" @click="goToTop">＜</button>
       <h1 class="title">プロフィール交換</h1>
     </header>
 
     <!-- メインコンテンツ -->
     <main class="content">
-      <!-- 検索バー（虫眼鏡ボタンで検索実行） -->
+      <!-- 検索バー -->
       <div class="search-bar">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="名前またはユーザーIDを入力"
-          class="search-input"
-          @keyup.enter="handleSearch"
-        />
-        <button class="search-btn" @click="handleSearch">🔍 検索</button>
+        <input v-model="searchQuery" type="text" placeholder="名前またはユーザーIDを入力" class="search-input" />
+        <button class="search-btn">🔍 検索</button>
       </div>
 
-      <!-- 拒否された場合 -->
-      <div v-if="hasRejected" class="rejected-message">フォローを拒否しました</div>
-
-      <!-- 1. フォローしている場合：プロフィールカードをフル表示 -->
-      <div v-else-if="selectedUser.status === 'following'" class="featured-card">
-        <div class="card-header-user">
+      <!-- プロフィール表示エリア -->
+      <!-- Case 1: 「フォロー中」のユーザーを選択している場合 ➔ 詳細を表示 -->
+      <div v-if="selectedUser.status === 'following'" class="profile-card">
+        <div class="card-title-header">
           <span class="user-display-name">{{ selectedUser.name }} さんのプロフィール</span>
         </div>
-        <div class="card-top">
-          <div class="avatar-placeholder">
-            <svg class="avatar-icon" viewBox="0 0 24 24" fill="#aaa">
+
+        <div class="profile-detail-top">
+          <div class="avatar-circle">
+            <svg class="avatar-icon" viewBox="0 0 24 24" fill="#bbb">
               <path
-                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                d="M12,12 C14.21,12 16,10.21 16,8 C16,5.79 14.21,4 12,4 C9.79,4 8,5.79 8,8 C8,10.21 9.79,12 12,12 Z M12,14 C9.33,14 4,15.34 4,18 L4,20 L20,20 L20,18 C20,15.34 14.67,14 12,14 Z"
               />
             </svg>
           </div>
-          <!-- 動的プロフィール情報 -->
-          <div class="user-info">
-            <p class="user-id">ID: {{ selectedUser.userId }}</p>
-            <p class="user-bio">{{ selectedUser.bio }}</p>
+          <div class="profile-bio">
+            <div class="user-id">ID: @{{ selectedUser.idName }}</div>
+            <p class="bio-text">{{ selectedUser.bio }}</p>
           </div>
         </div>
 
-        <!-- 動的詳細情報エリア -->
-        <div class="card-bottom">
-          <div class="detail-item">
-            <span class="detail-label">📍 エリア:</span>
-            <span class="detail-value">{{ selectedUser.location }}</span>
+        <div class="profile-detail-info">
+          <div class="info-row">
+            <span class="icon">📍</span> <span class="label">エリア:</span> {{ selectedUser.area }}
           </div>
-          <div class="detail-item">
-            <span class="detail-label">🎨 趣味:</span>
-            <span class="detail-value">{{ selectedUser.hobbies }}</span>
+          <div class="info-row">
+            <span class="icon">📍</span> <span class="label">趣味:</span> {{ selectedUser.hobby }}
           </div>
-          <div class="detail-item">
-            <span class="detail-label">💬 一言:</span>
-            <span class="detail-value">{{ selectedUser.comment }}</span>
+          <div class="info-row">
+            <span class="icon">💬</span> <span class="label">一言:</span> {{ selectedUser.comment }}
           </div>
         </div>
 
         <div class="card-actions">
-          <button class="btn btn-secondary" @click="rejectFeaturedUser">拒否する</button>
-          <button class="btn" :class="getUserBtnStatus(selectedUser).class" @click="toggleUserFollow(selectedUser)">
-            {{ getUserBtnStatus(selectedUser).text }}
-          </button>
+          <button class="btn btn-reject" @click="rejectSelectedUser">拒否する</button>
+          <button class="btn btn-following-state" @click="toggleFollow(selectedUser)">フォロー中</button>
         </div>
       </div>
 
-      <!-- 2. 未フォロー・リクエスト中の場合：非公開カードを表示 -->
-      <div v-else class="featured-card private-card">
-        <div class="card-header-user">
+      <!-- Case 2: 「フォロー中」以外（未フォロー/リクエスト中）を選択している場合 ➔ 非公開表示 -->
+      <div v-else class="profile-card private-card">
+        <div class="card-title-header center">
           <span class="user-display-name">{{ selectedUser.name }} さんのプロフィール</span>
         </div>
+
         <div class="private-content">
-          <span class="lock-icon">🔒</span>
-          <p class="private-title">このアカウントは非公開です</p>
-          <p class="private-sub">フォローすると{{ selectedUser.name }}さんのプロフィールや詳細を閲覧できます</p>
+          <div class="lock-icon">🔒</div>
+          <div class="private-title">このアカウントは非公開です</div>
+          <div class="private-sub">フォローすると{{ selectedUser.name }}さんのプロフィール詳細を閲覧できます</div>
         </div>
-        <div class="card-actions single-action">
-          <button class="btn" :class="getUserBtnStatus(selectedUser).class" @click="toggleUserFollow(selectedUser)">
-            {{ getUserBtnStatus(selectedUser).text }}
+
+        <div class="card-actions center-action">
+          <button class="btn" :class="getButtonClass(selectedUser)" @click="toggleFollow(selectedUser)">
+            {{ getButtonText(selectedUser) }}
           </button>
         </div>
       </div>
 
-      <!-- タブ切り替え（フォロワー / フォロー中 / リクエスト） -->
+      <!-- タブ切替 -->
       <div class="tab-container">
         <button class="tab-button" :class="{ active: activeTab === 'followers' }" @click="activeTab = 'followers'">
           フォロワー ({{ followersList.length }})
@@ -98,50 +87,46 @@
         </button>
       </div>
 
-      <!-- ユーザーリスト表示エリア -->
+      <!-- ユーザーリスト -->
       <div class="user-list">
-        <!-- 1. フォロワーリスト -->
+        <!-- フォロワー タブ -->
         <template v-if="activeTab === 'followers'">
-          <div v-if="followersList.length === 0" class="empty-state">該当するフォロワーはいません</div>
           <div
             v-for="user in followersList"
             :key="user.id"
             class="user-item"
-            :class="{ selected: selectedUser.id === user.id }"
-            @click="selectUser(user)"
+            :class="{ active: selectedUser.id === user.id }"
+            @click="selectedUser = user"
           >
             <span class="user-name">{{ user.name }}</span>
-            <button class="btn btn-sm" :class="getUserBtnStatus(user).class" @click.stop="toggleUserFollow(user)">
-              {{ getUserBtnStatus(user).text }}
+            <button class="btn btn-sm" :class="getButtonClass(user)" @click.stop="toggleFollow(user)">
+              {{ getButtonText(user) }}
             </button>
           </div>
         </template>
 
-        <!-- 2. フォロー中リスト -->
+        <!-- フォロー中 タブ -->
         <template v-else-if="activeTab === 'following'">
-          <div v-if="followingList.length === 0" class="empty-state">該当するフォロー中のユーザーはいません</div>
           <div
             v-for="user in followingList"
             :key="user.id"
             class="user-item"
-            :class="{ selected: selectedUser.id === user.id }"
-            @click="selectUser(user)"
+            :class="{ active: selectedUser.id === user.id }"
+            @click="selectedUser = user"
           >
             <span class="user-name">{{ user.name }}</span>
-            <button class="btn btn-sm" :class="getUserBtnStatus(user).class" @click.stop="toggleUserFollow(user)">
-              {{ getUserBtnStatus(user).text }}
-            </button>
+            <button class="btn btn-sm btn-following-state" @click.stop="toggleFollow(user)">フォロー中</button>
           </div>
         </template>
 
-        <!-- 3. フォローリクエスト欄 -->
+        <!-- リクエスト タブ -->
         <template v-else-if="activeTab === 'requests'">
-          <div v-if="requestsList.length === 0" class="empty-state">新しいリクエストはありません</div>
-          <div v-for="user in requestsList" :key="user.id" class="user-item" @click="selectUser(user)">
+          <div v-if="requestsList.length === 0" class="empty-msg">リクエストはありません</div>
+          <div v-for="user in requestsList" :key="user.id" class="user-item" @click="selectedUser = user">
             <span class="user-name">{{ user.name }}</span>
-            <div class="request-actions">
+            <div class="request-btns">
               <button class="btn btn-sm btn-accept" @click.stop="acceptRequest(user)">承認</button>
-              <button class="btn btn-sm btn-secondary" @click.stop="rejectRequest(user)">削除</button>
+              <button class="btn btn-sm btn-delete" @click.stop="rejectRequest(user)">拒否</button>
             </div>
           </div>
         </template>
@@ -156,128 +141,119 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const searchQuery = ref("");
-const appliedSearchQuery = ref(""); // 検索実行された文字を保持
 const activeTab = ref("followers");
-const hasRejected = ref(false);
 
-// ユーザーデータ一覧（フォロー中ユーザーを追加）
+// トップページへ遷移する処理
+const goToTop = () => {
+  router.push("/");
+};
+
+// 初期ユーザーデータ
 const users = ref([
   {
     id: 1,
-    name: "佐藤 さくら",
-    userId: "@sakura_sato",
-    status: "none",
-    isFollower: true,
-    isRequesting: false,
-    bio: "イラストを描くのが好きです🎨 まったり投稿中！",
-    location: "東京都",
-    hobbies: "イラスト、読書、カフェ巡り",
-    comment: "フォロワーさん歓迎です！"
-  },
-  {
-    id: 2,
-    name: "田中 健太",
-    userId: "@kenta_tanaka",
-    status: "requested",
-    isFollower: true,
-    isRequesting: false,
-    bio: "フットサルとラーメン巡りが趣味。週末はだいたい外にいます⚽️",
-    location: "神奈川県",
-    hobbies: "フットサル、ドライブ、ラーメン開拓",
-    comment: "気軽に仲良くしてくださいー！"
-  },
-  {
-    id: 3,
     name: "鈴木 葵",
-    userId: "@aoi_suzuki",
+    idName: "aoi_suzuki",
     status: "following",
     isFollower: true,
     isRequesting: false,
-    bio: "カフェ巡りと写真撮影が大好き📷☕️ 美味しいスイーツを探す旅に出ています。",
-    location: "大阪府",
-    hobbies: "カフェ巡り、写真撮影、旅行",
+    bio: "カフェ巡りと写真撮影が大好き📷✨ 美味しいスイーツを探す旅に出ています。",
+    area: "大阪府",
+    hobby: "カフェ巡り、写真撮影、旅行",
     comment: "カフェ好きの人と繋がりたいです✨"
   },
   {
-    id: 6, // ✨ 追加されたフォロー中ユーザー
-    name: "中村 拓海",
-    userId: "@takumi_n",
-    status: "following",
+    id: 2,
+    name: "佐藤 さくら",
+    idName: "sakura_s",
+    status: "none",
     isFollower: true,
     isRequesting: false,
-    bio: "Webエンジニアです💻 プログラミングとガジェット収集が趣味です。",
-    location: "千葉県",
-    hobbies: "プログラミング、ガジェット、キャンプ",
-    comment: "IT系のアカウント中心にフォローしてます！"
+    bio: "音楽鑑賞とライブに行くのが休日の楽しみです🎶",
+    area: "東京都",
+    hobby: "ライブ鑑賞、邦ロック",
+    comment: "気軽に話しかけてください！"
+  },
+  {
+    id: 3,
+    name: "田中 健太",
+    idName: "kenta_t",
+    status: "requested",
+    isFollower: true,
+    isRequesting: false,
+    bio: "週末はドライブによく出かけています🚗💨",
+    area: "神奈川県",
+    hobby: "ドライブ、スノーボード",
+    comment: "アクティブな友達募集中です！"
   },
   {
     id: 4,
-    name: "高橋 陸",
-    userId: "@riku_takahashi",
-    status: "none",
-    isFollower: false,
-    isRequesting: true,
-    bio: "バンドでベース弾いてます🎸 音楽好きな人は気軽にフォローしてください！",
-    location: "愛知県",
-    hobbies: "ベース演奏、ライブ鑑賞、映画",
-    comment: "リクエストお気軽にどうぞ👍"
+    name: "中村 拓海",
+    idName: "takumi_n",
+    status: "following",
+    isFollower: true,
+    isRequesting: false,
+    bio: "Web開発とイラストを描くのが趣味です💻🎨 最近はキャンプにもハマり中⛺️",
+    area: "兵庫県",
+    hobby: "プログラミング、イラスト、アウトドア",
+    comment: "ガジェットとアウトドア好きの方ぜひ繋がりましょう！"
   },
   {
     id: 5,
-    name: "美咲",
-    userId: "@misaki_style",
+    name: "高橋 涼",
+    idName: "ryo_t",
     status: "none",
     isFollower: false,
     isRequesting: true,
-    bio: "コスメと洋服が大好き💄 日常の気になったことや購入品をアップしてます！",
-    location: "福岡県",
-    hobbies: "メイク、ファッション、ヨガ",
-    comment: "情報交換しましょう〜"
+    bio: "読書と映画鑑賞が趣味です📚🎬",
+    area: "京都府",
+    hobby: "映画観賞、読書",
+    comment: "おすすめの映画教えてください！"
+  },
+  {
+    id: 6,
+    name: "伊藤 美咲",
+    idName: "misaki_i",
+    status: "none",
+    isFollower: false,
+    isRequesting: true,
+    bio: "美味しいものを食べることが一番の幸せ🍴❤️",
+    area: "愛知県",
+    hobby: "グルメ巡り、料理",
+    comment: "美味しいお店情報交換しましょう！"
   }
 ]);
 
-// 上部のカードに表示する選択中のユーザー（初期値：鈴木 葵さん）
-const selectedUser = ref(users.value[2]);
+// 初期表示で「鈴木 葵」を選択
+const selectedUser = ref(users.value[0]);
 
-// 🔍 虫眼鏡ボタンを押したときに検索フィルタを実行
-const handleSearch = () => {
-  appliedSearchQuery.value = searchQuery.value.trim();
-
-  // 検索結果の1番目を自動的に選択して上部カードにセット
-  if (filteredUsers.value.length > 0) {
-    selectedUser.value = filteredUsers.value[0];
-    hasRejected.value = false;
-  }
-};
-
-// 検索ボタン実行後のキーワードで絞り込み
+// 検索フィルター
 const filteredUsers = computed(() => {
-  if (!appliedSearchQuery.value) {
-    return users.value;
-  }
-  const query = appliedSearchQuery.value.toLowerCase();
-  return users.value.filter((u) => u.name.toLowerCase().includes(query) || u.userId.toLowerCase().includes(query));
+  if (!searchQuery.value.trim()) return users.value;
+  const query = searchQuery.value.toLowerCase();
+  return users.value.filter((u) => u.name.toLowerCase().includes(query) || u.idName.toLowerCase().includes(query));
 });
 
-// 各タブの絞り込み
+// タブごとのリスト
 const followersList = computed(() => filteredUsers.value.filter((u) => u.isFollower));
 const followingList = computed(() => filteredUsers.value.filter((u) => u.status === "following"));
 const requestsList = computed(() => filteredUsers.value.filter((u) => u.isRequesting));
 
-const goBack = () => {
-  router.push("/home");
+// ボタンのテキストとスタイル切り替え
+const getButtonText = (user) => {
+  if (user.status === "requested") return "リクエスト中";
+  if (user.status === "following") return "フォロー中";
+  return "フォロー";
 };
 
-const selectUser = (user) => {
-  selectedUser.value = user;
-  hasRejected.value = false;
+const getButtonClass = (user) => {
+  if (user.status === "requested") return "btn-requested-state";
+  if (user.status === "following") return "btn-following-state";
+  return "btn-follow-action";
 };
 
-const rejectFeaturedUser = () => {
-  hasRejected.value = true;
-};
-
-const toggleUserFollow = (user) => {
+// フォロー / リクエスト切替ロジック
+const toggleFollow = (user) => {
   if (user.status === "none") {
     user.status = "requested";
   } else if (user.status === "requested") {
@@ -287,365 +263,314 @@ const toggleUserFollow = (user) => {
   }
 };
 
+// リクエストタブの「承認」
 const acceptRequest = (user) => {
   user.isRequesting = false;
   user.isFollower = true;
 };
 
+// リクエストタブの「拒否」
 const rejectRequest = (user) => {
   user.isRequesting = false;
 };
 
-const getUserBtnStatus = (user) => {
-  if (user.status === "requested") {
-    return { text: "リクエスト中", class: "btn-requested" };
-  } else if (user.status === "following") {
-    return { text: "フォロー中", class: "btn-following" };
-  }
-  return { text: "フォロー", class: "btn-primary" };
+// プロフィールカード内の「拒否する」
+const rejectSelectedUser = () => {
+  selectedUser.value.status = "none";
 };
 </script>
 
 <style scoped>
-/* 全体レイアウト */
 .page-container {
   width: 100%;
   min-height: 100vh;
-  background-color: #ffeef2;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #fce8ee;
+  font-family: sans-serif;
   box-sizing: border-box;
 }
 
-/* ヘッダー */
 .header {
+  position: relative;
+  background-color: #f7cbd6;
+  padding: 14px;
   display: flex;
   align-items: center;
-  padding: 16px;
-  background-color: #fdd8e5;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.back-button {
+.back-btn {
+  position: absolute;
+  left: 12px;
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  color: #4a3334;
+  color: #333;
   cursor: pointer;
+  padding: 0 8px;
 }
 
 .title {
-  flex-grow: 1;
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #4a3334;
   margin: 0;
-  margin-right: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
 }
 
-/* メインコンテンツ */
 .content {
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 600px;
+  gap: 12px;
+  max-width: 800px; /* PC画面で広がりすぎないよう中央寄算見栄え用のカード制限（不要なら削除可） */
   margin: 0 auto;
 }
 
 /* 検索バー */
 .search-bar {
   display: flex;
-  align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  background: #ffffff;
   border-radius: 20px;
-  padding: 4px 6px 4px 16px;
-  gap: 8px;
+  padding: 3px 3px 3px 12px;
+  align-items: center;
 }
 
 .search-input {
   border: none;
   outline: none;
   flex: 1;
-  font-size: 13px;
-  background: transparent;
+  font-size: 12px;
 }
 
 .search-btn {
-  background-color: #f4a261;
-  color: #ffffff;
+  background-color: #f3a660;
+  color: white;
   border: none;
   border-radius: 16px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: 5px 12px;
+  font-size: 11px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.search-btn:hover {
-  background-color: #e76f51;
+/* プロフィールカード */
+.profile-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-/* メインカード */
-.featured-card {
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.card-header-user {
-  margin-bottom: 12px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 6px;
-}
-
-.user-display-name {
-  font-size: 15px;
+.card-title-header {
+  font-size: 13px;
   font-weight: bold;
-  color: #4a3334;
+  color: #333;
+  margin-bottom: 12px;
 }
 
-.card-top {
+.profile-detail-top {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-.avatar-placeholder {
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-  background-color: #e0e0e0;
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  background-color: #e2e2e2;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .avatar-icon {
-  width: 50px;
-  height: 50px;
-}
-
-.user-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  width: 32px;
+  height: 32px;
 }
 
 .user-id {
-  font-size: 12px;
+  font-size: 10px;
   color: #888;
-  margin: 0;
 }
 
-.user-bio {
-  font-size: 13px;
+.bio-text {
+  font-size: 11px;
   color: #444;
-  line-height: 1.4;
   margin: 4px 0 0 0;
+  line-height: 1.4;
 }
 
-.card-bottom {
+.profile-detail-info {
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-  background-color: #fafafa;
-  padding: 12px;
-  border-radius: 12px;
+  gap: 4px;
+  margin-bottom: 12px;
 }
 
-.detail-item {
-  display: flex;
-  font-size: 12px;
-  gap: 8px;
-}
-
-.detail-label {
-  color: #666;
+.info-row .label {
   font-weight: bold;
-  width: 70px;
+  color: #555;
 }
 
-.detail-value {
-  color: #333;
-  flex: 1;
-}
-
+/* カード内アクションボタン */
 .card-actions {
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
 }
 
-.card-actions.single-action {
+.center-action {
   justify-content: center;
 }
 
-/* 非公開カード */
-.private-card {
-  text-align: center;
-  padding: 20px 20px 30px 20px;
-}
-
-.private-content {
-  margin: 16px 0 20px 0;
-}
-
-.lock-icon {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.private-title {
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 0 6px 0;
-}
-
-.private-sub {
-  font-size: 12px;
-  color: #777;
-  margin: 0;
-}
-
-/* 拒否メッセージ */
-.rejected-message {
-  background-color: #fff0f3;
-  color: #d9534f;
-  border: 1px solid #f5c6cb;
-  padding: 14px;
-  border-radius: 12px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* タブ切替 */
-.tab-container {
-  display: flex;
-  border-bottom: 2px solid #e0e0e0;
-  margin-top: 8px;
-}
-
-.tab-button {
-  flex: 1;
-  padding: 10px 0;
-  background: none;
-  border: none;
-  font-size: 13px;
-  font-weight: bold;
-  color: #888;
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.tab-button.active {
-  color: #4a3334;
-  border-bottom-color: #4a3334;
-}
-
-.badge {
-  background-color: #e53935;
-  color: #ffffff;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 4px;
-}
-
-/* ボタン各種 */
 .btn {
-  padding: 6px 16px;
-  border-radius: 12px;
-  font-size: 12px;
-  cursor: pointer;
+  border-radius: 14px;
+  font-size: 11px;
   font-weight: bold;
-  transition: all 0.2s;
+  padding: 5px 16px;
+  cursor: pointer;
+  border: none;
 }
 
 .btn-sm {
   padding: 4px 12px;
-  font-size: 11px;
+  font-size: 10px;
 }
 
-.btn-primary {
-  background-color: #f7e1b5;
-  color: #4a3334;
-  border: 1px solid #4a3334;
-}
-
-.btn-secondary {
-  background-color: #f5f5f5;
+.btn-reject {
+  background: #f0f0f0;
   color: #666;
-  border: 1px solid #ccc;
 }
 
-.btn-requested {
-  background-color: #e0e0e0;
-  color: #555;
-  border: 1px solid #bbb;
+.btn-follow-action {
+  background: #fce8cc;
+  color: #333;
+  border: 1px solid #e2b378;
 }
 
-.btn-following {
-  background-color: #ffffff;
+.btn-requested-state {
+  background: #dcdcdc;
+  color: #666;
+}
+
+.btn-following-state {
+  background: #ffffff;
   color: #333;
   border: 1px solid #ccc;
 }
 
 .btn-accept {
-  background-color: #4cae4c;
+  background: #52c41a;
   color: white;
-  border: none;
 }
 
-/* リスト領域 */
-.user-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.btn-delete {
+  background: #e6e6e6;
+  color: #666;
 }
 
-.user-item {
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 10px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.2s;
+/* 非公開カード表示 */
+.private-card {
+  text-align: center;
+  padding: 24px 16px;
 }
 
-.user-item.selected {
-  border-color: #f4a261;
+.private-content {
+  margin: 16px 0;
 }
 
-.user-name {
-  font-size: 15px;
+.lock-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.private-title {
+  font-size: 13px;
   font-weight: bold;
   color: #333;
 }
 
-.request-actions {
+.private-sub {
+  font-size: 10px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* タブ切替 */
+.tab-container {
   display: flex;
+  border-bottom: 2px solid #e8b0bd;
+  margin-top: 6px;
+}
+
+.tab-button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-button.active {
+  color: #333;
+  border-bottom-color: #333;
+}
+
+.badge {
+  background: #d9363e;
+  color: white;
+  border-radius: 10px;
+  padding: 1px 5px;
+  font-size: 9px;
+  margin-left: 2px;
+}
+
+/* リストアイテム */
+.user-list {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.empty-state {
+.user-item {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-item.active {
+  outline: 2px solid #f3a660;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+}
+
+.request-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.empty-msg {
   text-align: center;
+  font-size: 11px;
   color: #888;
-  font-size: 13px;
-  padding: 20px 0;
+  padding: 12px;
 }
 </style>
