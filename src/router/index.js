@@ -47,6 +47,7 @@ const router = createRouter({
       path: "/profile/create",
       name: "profile-creation",
       component: ProfileCreationView,
+    },
     {
       path: "/profile-exchange",
       name: "ProfileExchanging",
