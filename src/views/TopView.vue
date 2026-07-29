@@ -4,24 +4,30 @@
   <div class="app-wrapper">
     <div class="top-container">
       <div class="content-wrapper">
-       <h1 class="app-title">proffy</h1>
+        <h1 class="app-title">proffy</h1>
 
-       <div class="button-group">
-         <button class="menu-button" @click="goTo('diagnosis')">自己診断をする</button>
-         <button class="menu-button" @click="goTo('profile-edit')">プロフィール編集</button>
-         <button class="menu-button" @click="goTo('profile-exchange')">プロフィール交換</button>
-       </div>
+        <div class="button-group">
+          <button class="menu-button" @click="goTo('self-diagnosis')">
+            自己診断をする
+          </button>
+          <button class="menu-button" @click="goTo('profile-edit')">
+            プロフィール編集
+          </button>
+          <button class="menu-button" @click="goTo('profile-exchange')">
+            プロフィール交換
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 function goTo(page) {
-  router.push(`/${page}`)
+  router.push(`/${page}`);
 }
 </script>
 
@@ -38,7 +44,7 @@ function goTo(page) {
 
 /* スマホ枠（角ばったまま）＋ 0.9倍縮小 */
 .top-container {
-  width: calc(100vh*9/18);
+  width: calc(100vh * 9 / 18);
   height: 100vh;
   background-color: #ffebf3;
   border-radius: 0;
@@ -55,7 +61,6 @@ function goTo(page) {
 .content-wrapper {
   margin-top: 40px; /* ← タイトル＋ボタン全体を下げる */
 }
-
 
 /* タイトル */
 .app-title {
@@ -87,7 +92,7 @@ function goTo(page) {
   cursor: pointer;
   font-weight: bold;
   color: #333;
-  width:150px;
-  margin:0 auto;
+  width: 150px;
+  margin: 0 auto;
 }
 </style>
