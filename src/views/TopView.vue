@@ -1,98 +1,176 @@
 <!-- PRテスト用のコメント -->
 
 <template>
-  <div class="app-wrapper">
+  <main class="top-page">
     <div class="top-container">
       <div class="content-wrapper">
         <h1 class="app-title">proffy</h1>
 
         <div class="button-group">
-          <button class="menu-button" @click="goTo('self-diagnosis')">
+          <button
+            type="button"
+            class="menu-button"
+            @click="goTo('self-diagnosis')"
+          >
             自己診断をする
           </button>
-          <button class="menu-button" @click="goTo('profile-edit')">
+
+          <button
+            type="button"
+            class="menu-button"
+            @click="goTo('profile-edit')"
+          >
             プロフィール編集
           </button>
-          <button class="menu-button" @click="goTo('profile-exchange')">
+
+          <button
+            type="button"
+            class="menu-button"
+            @click="goTo('profile-exchange')"
+          >
             プロフィール交換
           </button>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
+
 const router = useRouter();
 
-function goTo(page) {
+const goTo = (page) => {
   router.push(`/${page}`);
-}
+};
 </script>
 
 <style scoped>
-/* 外側（ピンクを広げない） */
-.app-wrapper {
+.top-page {
   width: 100%;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background-color: #f5f5f5;
-  padding-top: 20px;
+  overflow-x: hidden;
+  background: #ffebf3;
 }
 
-/* スマホ枠（角ばったまま）＋ 0.9倍縮小 */
 .top-container {
-  width: calc(100vh * 9 / 18);
-  height: 100vh;
-  background-color: #ffebf3;
-  border-radius: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 100px;
+  align-items: flex-start;
+  justify-content: center;
 
-  transform: scale(0.8);
-  transform-origin: top center; /* 上中央を基準に縮小 */
+  width: 100%;
+  max-width: 760px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 120px 32px 48px;
+
+  background: #ffebf3;
+  box-sizing: border-box;
 }
 
 .content-wrapper {
-  margin-top: 40px; /* ← タイトル＋ボタン全体を下げる */
-}
-
-/* タイトル */
-.app-title {
-  font-size: 30px;
-  color: #311313;
-  margin-bottom: 60px;
-  font-weight: 300;
-  margin-bottom: 60px;
-  text-align: center;
   width: 100%;
+  max-width: 420px;
+  text-align: center;
 }
 
-/* ボタン配置 */
+.app-title {
+  width: 100%;
+  margin: 0 0 64px;
+
+  color: #311313;
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 300;
+  text-align: center;
+}
+
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 80%;
-  max-width: 300px;
+  gap: 28px;
+
+  width: 100%;
 }
 
-/* 丸いボタン（縁あり・影なし） */
 .menu-button {
-  background-color: #ffe8a3;
-  border: 1px solid #311313;
-  padding: 10px 2px;
-  font-size: 15px;
-  border-radius: 10px; /* ボタンだけ丸く */
-  cursor: pointer;
-  font-weight: bold;
-  color: #333;
-  width: 150px;
+  display: block;
+
+  width: min(100%, 280px);
+  min-height: 52px;
   margin: 0 auto;
+  padding: 12px 20px;
+
+  color: #333333;
+  font-size: 16px;
+  font-weight: 700;
+
+  background: #ffe8a3;
+  border: 1px solid #311313;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.menu-button:hover {
+  background: #ffde7d;
+  transform: translateY(-1px);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .top-container {
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 96px 20px 40px;
+  }
+
+  .content-wrapper {
+    max-width: 360px;
+  }
+
+  .app-title {
+    margin-bottom: 52px;
+    font-size: 32px;
+  }
+
+  .button-group {
+    gap: 24px;
+  }
+
+  .menu-button {
+    width: min(100%, 240px);
+    min-height: 50px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .top-container {
+    padding-top: 80px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .app-title {
+    margin-bottom: 44px;
+    font-size: 29px;
+  }
+
+  .button-group {
+    gap: 20px;
+  }
+
+  .menu-button {
+    width: min(100%, 220px);
+  }
 }
 </style>
