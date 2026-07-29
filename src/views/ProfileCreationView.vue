@@ -458,7 +458,7 @@ const formData = reactive({
 });
 
 const goToTop = () => {
-  router.push("/");
+  router.push("/top");
 };
 
 const toggleEditMode = () => {
@@ -468,6 +468,7 @@ const toggleEditMode = () => {
 
 const handleShare = () => {
   alert("プロフィールの共有リンクをコピーしました！");
+  router.push({ name: "ProfileExchanging" });
 };
 </script>
 

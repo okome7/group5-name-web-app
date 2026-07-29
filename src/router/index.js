@@ -44,7 +44,7 @@ const router = createRouter({
       component: SelfDiagnosisResultView,
     },
     {
-      path: "/profile/create",
+      path: "/profile-edit",
       name: "profile-creation",
       component: ProfileCreationView,
     },
