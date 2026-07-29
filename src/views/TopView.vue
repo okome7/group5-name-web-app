@@ -78,11 +78,11 @@ const goTo = (page) => {
 .app-title {
   width: 100%;
   margin: 0 0 64px;
-
-  color: #311313;
-  font-size: clamp(30px, 5vw, 42px);
-  font-weight: 300;
   text-align: center;
+  font-size: 56px;
+  font-family: "Times New Roman", serif;
+  color: #4d2f2f;
+  margin-bottom: 80px;
 }
 
 .button-group {
