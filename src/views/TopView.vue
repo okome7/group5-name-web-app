@@ -1,3 +1,5 @@
+<!-- PRテスト用のコメント -->
+
 <template>
   <div class="app-wrapper">
     <div class="top-container">
@@ -79,7 +81,7 @@ function goTo(page) {
 .menu-button {
   background-color: #ffe8a3;
   border: 1px solid #311313;
-  padding: 10px 1px;
+  padding: 10px 2px;
   font-size: 15px;
   border-radius: 10px; /* ボタンだけ丸く */
   cursor: pointer;
